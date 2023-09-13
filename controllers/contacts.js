@@ -1,16 +1,20 @@
 const {
-  getAllContactsModels,
-  getOneContactModels,
-  createContactModels,
-  updateContactModels,
-  deleteContactModels,
-} = require("../models/contacts");
+  getAllContactsService,
+  getOneContactService,
+  createContactService,
+  updateContactService,
+  deleteContactService,
+  updateStatusContactServices,
+} = require("../services/contacts");
 
-const contactSchema = require("../schemas/contact");
+const {
+  addContactValidationSchema,
+  updateContactValidationSchema,
+} = require("../utils/validation/contactValidationSchemas");
 
 const getAllContacts = async (req, res, next) => {
   try {
-    const contacts = await getAllContactsModels();
+    const contacts = await getAllContactsService();
     res.json(contacts);
   } catch (error) {
     next(error);
@@ -20,7 +24,7 @@ const getAllContacts = async (req, res, next) => {
 const getOneContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const contact = await getOneContactModels(id);
+    const contact = await getOneContactService(id);
 
     res.status(200).json(contact);
   } catch (error) {
@@ -30,12 +34,12 @@ const getOneContact = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
   try {
-    const { error } = contactSchema.validate(req.body);
+    const { error } = addContactValidationSchema.validate(req.body);
 
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
-    const newContact = await createContactModels(req.body);
+    const newContact = await createContactService(req.body);
     res.status(201).json(newContact);
   } catch (error) {
     next(error);
@@ -46,13 +50,13 @@ const updateContact = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const { error } = contactSchema.validate(req.body);
+    const { error } = updateContactValidationSchema.validate(req.body);
 
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    const updatedContact = await updateContactModels(id, req.body);
+    const updatedContact = await updateContactService(id, req.body);
 
     res.status(200).json(updatedContact);
   } catch (error) {
@@ -63,9 +67,30 @@ const updateContact = async (req, res, next) => {
 const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedContactID = await deleteContactModels(id);
+    const deletedContactID = await deleteContactService(id);
 
     res.status(200).json({ message: `Contact ${deletedContactID} deleted` });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateStatusContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { favorite } = req.body;
+
+    const { error } = updateContactValidationSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    const updatedStatus = await updateStatusContactServices(id, {
+      favorite,
+    });
+
+    res.status(200).json(updatedStatus);
   } catch (error) {
     next(error);
   }
@@ -77,4 +102,5 @@ module.exports = {
   createContact,
   updateContact,
   deleteContact,
+  updateStatusContact,
 };
