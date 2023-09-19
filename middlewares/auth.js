@@ -22,16 +22,12 @@ const auth = (req, res, next) => {
       try {
         const user = await User.findById(decode.id).exec();
 
-        console.log("Token from request:", token);
-
         if (user.token !== token) {
-          return res.status(401).send({ message: "You are not authorize" });
+          return res.status(401).send({ message: "You are not authorized" });
         }
 
         req.user = { id: decode.id };
 
-        console.log("Decoded user id:", decode.id);
-        console.log("User from database:", user);
         next();
       } catch (err) {
         next(err);
