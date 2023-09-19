@@ -7,7 +7,7 @@ const {
   updateContact,
   deleteContact,
   updateStatusContact,
-} = require("../../controllers/contacts");
+} = require("../../controllers/controllersContacts");
 
 const router = Router();
 
