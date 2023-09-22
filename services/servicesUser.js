@@ -13,6 +13,7 @@ const registationService = async (body) => {
   return {
     email: newUser.email,
     subscription: newUser.subscription,
+    avatarURL: newUser.avatarURL,
   };
 };
 

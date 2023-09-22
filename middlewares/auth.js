@@ -6,14 +6,14 @@ const auth = (req, res, next) => {
 
   const [bearer, token] = authHeader.split(" ", 2);
 
-  if (bearer !== "Bearer") {
+  if (bearer !== "Bearer" || !token) {
     return res.status(401).send({ messange: "No token provided" });
   }
   jwt.verify(
     token,
     process.env.ACCESS_TOKEN_SECRET_KEY,
     async (err, decode) => {
-      if (err) {
+      if (err && err.name === "TokenExpiredError") {
         if (err.name === "TokenExpiredError") {
           return res.status(401).send({ message: "Not authorized" });
         }

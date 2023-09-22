@@ -1,5 +1,7 @@
-const globalErrorHandler = require("./middlewares/globalErrorHandler");
-const notFoundHandler = require("./middlewares/notFoundHandler");
+const path = require("node:path");
+
+const globalErrorHandler = require("./middlewares/errors/globalErrorHandler");
+const notFoundHandler = require("./middlewares/errors/notFoundHandler");
 
 const express = require("express");
 
@@ -13,6 +15,7 @@ const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
+app.use("/avatars", express.static(path.join(__dirname, "public", "avatars")));
 app.use(logger(formatsLogger));
 app.use(cors());
 
