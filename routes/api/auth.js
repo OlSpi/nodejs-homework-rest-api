@@ -7,6 +7,8 @@ const {
   loginController,
   logoutController,
   getCurrentUserController,
+  verifyUsersEmailController,
+  resendVerificationEmailController,
 } = require("../../controllers/controllersUser");
 const {
   uploadUserAvatarController,
@@ -24,5 +26,6 @@ router.patch(
   upload.single("avatar"),
   uploadUserAvatarController
 );
-
+router.get("/verify/:verificationToken", verifyUsersEmailController);
+router.post("/verify", resendVerificationEmailController);
 module.exports = { authRouter: router };
